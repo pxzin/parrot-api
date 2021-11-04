@@ -66,13 +66,14 @@ app.post('/addParrot', async (req,res) =>{
         api_key: process.env.CLOUDINARY_API_KEY,
         api_secret: process.env.CLOUDINARY_API_SECRET,
     })
-    const { path } = req.file; 
-    console.log('Here is req.file', req.file)//file becomes available in req at this point
-    if(!req.file){
-        return res.send('Please upload a file.')
+    console.log(req.files.parrotImage, req.files.parrotImages)
+    const { path } = req.files.parrotImage; 
+    console.log('Here is req.files.parrotImage', req.files.parrotImage)//file becomes available in req at this point
+    if(!req.files.parrotImage){
+    return res.send('Please upload a file.')
     }
 
-    const fName = req.file.originalname.split('.')[0]//ex of destructuring
+    const fName = req.files.parrotImage.name.split('.')[0]//ex of destructuring
     cloudinary.uploader.upload(
         path,
         {
@@ -105,7 +106,7 @@ app.post('/addParrot', async (req,res) =>{
     // createPost: async (req, res) => {
     //     try {
     //       // Upload image to cloudinary
-    //       const result = await cloudinary.uploader.upload(req.file.path);
+    //       const result = await cloudinary.uploader.upload(req.files.parrotImage.path);
     
     //       await Post.create({
     //         title: req.body.title,
@@ -122,7 +123,7 @@ app.post('/addParrot', async (req,res) =>{
     //   }
 
 
-    db.collection('parrots').insertOne({parrotImage: req.file.parrotImage, parrotName: req.body.parrotName, parrotColor: req.body.parrotColor, naturalHabitat: req.body.naturalHabitat, definingCharacteristic: req.body.definingCharacteristic})
+    db.collection('parrots').insertOne({parrotImage: req.files.parrotImage.parrotImage, parrotName: req.body.parrotName, parrotColor: req.body.parrotColor, naturalHabitat: req.body.naturalHabitat, definingCharacteristic: req.body.definingCharacteristic})
     .then(res => {
         console.log('Parrot Added')
         res.redirect('/')
